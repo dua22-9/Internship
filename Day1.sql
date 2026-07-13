@@ -108,3 +108,14 @@ FROM (
 ) ranked
 WHERE rank_spending <= 3;
 
+SHOW VARIABLES LIKE 'secure_file_priv';
+SHOW VARIABLES LIKE 'local_infile';
+SET GLOBAL local_infile = 1;
+
+
+
+
+
+
+
+
