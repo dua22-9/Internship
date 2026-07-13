@@ -111,11 +111,58 @@ WHERE rank_spending <= 3;
 SHOW VARIABLES LIKE 'secure_file_priv';
 SHOW VARIABLES LIKE 'local_infile';
 SET GLOBAL local_infile = 1;
+SHOW TABLES;
+
+-- practicing queries on imported data
+SELECT * FROM new_payments;
+SELECT * FROM orders_new;
+SELECT * FROM new_customers;
+SELECT * FROM new_products;
+
+SELECT c.name__firstname, c.name__lastname, p.amount, p.method, p.status
+FROM new_customers c
+JOIN new_payments p ON c.id = p.customer_id;
 
 
+WITH customer_payments AS (
+    SELECT customer_id, SUM(amount) AS total_paid
+    FROM new_payments
+    GROUP BY customer_id
+)
+SELECT c.name__firstname, c.name__lastname, cp.total_paid
+FROM new_customers c
+JOIN customer_payments cp ON c.id = cp.customer_id;
+
+SELECT customer_id, amount,
+       SUM(amount) OVER (PARTITION BY customer_id ORDER BY payment_id) AS running_total
+FROM new_payments;
+
+SELECT payment_id, amount,
+       CASE 
+           WHEN amount >= 200 THEN 'High'
+           WHEN amount BETWEEN 100 AND 199 THEN 'Medium'
+           ELSE 'Low'
+       END AS amount_category
+FROM new_payments;
+
+SELECT customer_id, payment_id, amount,
+       ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY amount DESC) AS row_num
+FROM new_payments;
 
 
+SELECT customer_id, SUM(amount) AS total_paid,
+       RANK() OVER (ORDER BY SUM(amount) DESC) AS rank_position
+FROM new_payments
+GROUP BY customer_id;
 
+SELECT title, price,
+       DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
+FROM new_products;
 
+SELECT customer_id, payment_id, amount,
+       LEAD(amount) OVER (PARTITION BY customer_id ORDER BY payment_id) AS next_payment
+FROM new_payments;
 
-
+SELECT customer_id, payment_id, amount,
+       LAG(amount) OVER (PARTITION BY customer_id ORDER BY payment_id) AS previous_payment
+FROM new_payments;
