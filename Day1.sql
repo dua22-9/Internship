@@ -166,3 +166,70 @@ FROM new_payments;
 SELECT customer_id, payment_id, amount,
        LAG(amount) OVER (PARTITION BY customer_id ORDER BY payment_id) AS previous_payment
 FROM new_payments;
+
+
+SELECT c.name__firstname, c.name__lastname, p.amount, p.method
+FROM new_customers c
+INNER JOIN new_payments p ON c.id = p.customer_id;
+
+
+SELECT c.name__firstname, c.name__lastname, p.amount, p.method
+FROM new_customers c
+LEFT JOIN new_payments p ON c.id = p.customer_id;
+
+
+SELECT c.id AS customer_id, c.name__firstname, p.amount
+FROM new_customers c
+LEFT JOIN new_payments p ON c.id = p.customer_id
+UNION
+SELECT c.id AS customer_id, c.name__firstname, p.amount
+FROM new_customers c
+RIGHT JOIN new_payments p ON c.id = p.customer_id;
+
+WITH customer_totals AS (
+    SELECT customer_id, SUM(amount) AS total_paid
+    FROM new_payments
+    GROUP BY customer_id
+)
+SELECT c.name__firstname, c.name__lastname, ct.total_paid
+FROM new_customers c
+JOIN customer_totals ct ON c.id = ct.customer_id
+WHERE ct.total_paid > 200;
+
+
+SELECT method, payment_id, amount,
+       RANK() OVER (PARTITION BY method ORDER BY amount DESC) AS rank_in_method
+FROM new_payments;
+
+
+SELECT customer_id, payment_id, amount,
+       SUM(amount) OVER (PARTITION BY customer_id ORDER BY payment_id) AS running_total
+FROM new_payments;
+
+
+SELECT method, payment_id, amount,
+       RANK() OVER (PARTITION BY method ORDER BY amount DESC) AS rank_in_method
+FROM new_payments;
+
+SELECT customer_id, payment_id, amount,
+       SUM(amount) OVER (PARTITION BY customer_id ORDER BY payment_id) AS running_total
+FROM new_payments;
+
+SELECT payment_id, amount,
+       CASE 
+           WHEN amount > 300 THEN 'High Value'
+           WHEN amount BETWEEN 100 AND 300 THEN 'Medium Value'
+           ELSE 'Low Value'
+       END AS payment_category
+FROM new_payments;
+
+
+SELECT category, AVG(price) AS avg_price
+FROM new_products
+GROUP BY category;
+
+
+SELECT method, SUM(amount) AS total_amount
+FROM new_payments
+GROUP BY method;
+
