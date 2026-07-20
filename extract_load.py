@@ -79,7 +79,7 @@ def create_tables(engine):
     print("Tables created/verified")
 
 
-# ---- validation functions ----
+# validation functions
 
 def validate_customers(df):
     rejected = []
@@ -184,7 +184,7 @@ def validate_orders(df, valid_customer_ids, valid_product_ids):
     return df, rejected_df
 
 
-# ---- main script ----
+# main script 
 
 if __name__ == "__main__":
     print("=" * 50)

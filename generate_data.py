@@ -27,7 +27,7 @@ invalid_statuses = ["refunded", "unknown", "???", ""]  # these will be used to c
 today = datetime.today().date()
 
 
-# --- Generate Customers ---
+# Generate Customers
 def generate_customers(n=350):
     rows = []
     used_ids = []
@@ -65,7 +65,7 @@ def generate_customers(n=350):
     return pd.DataFrame(rows)
 
 
-# --- Generate Products ---
+# Generate Products
 def generate_products(n=100):
     rows = []
     used_names = []
@@ -99,7 +99,7 @@ def generate_products(n=100):
     return pd.DataFrame(rows)
 
 
-# --- Generate Orders ---
+# Generate Orders
 def generate_orders(n=500, max_customer=350, max_product=100):
     rows = []
 
@@ -145,7 +145,7 @@ def generate_orders(n=500, max_customer=350, max_product=100):
     return pd.DataFrame(rows)
 
 
-# --- Main ---
+# Main
 if __name__ == "__main__":
     print("Generating fake CSV data...")
     print()

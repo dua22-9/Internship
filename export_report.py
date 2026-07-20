@@ -34,7 +34,7 @@ def get_engine():
     return create_engine(url, pool_pre_ping=True)
 
 
-# --- the 4 queries ---
+# the 4 queries 
 
 # 1. total revenue per product category
 query_revenue = """
